@@ -138,7 +138,3 @@ Output: Interactive graphs and charts displaying historical and current climate 
 [8] 	R. N. Conrad Wasko, "Influence of changes in rainfall and soil moisture on trends in flooding," Journal of Hydrology, vol. 575, pp. 432-441, August 2019. 
 [9] 	W. M. O. (WMO), "Challenges and Opportunities in Research on Climate, Weather, Water and Environment," World Meteorological Organization (WMO), Geneva, 2009.
 [10] 	A. D. B. (ADB), "Digital Technologies for Climate Action, Disaster Resilience, and Environmental Sustainability," Asian Development Bank, Mandaluyong City, Metro Manila, Philippines, 2021.
-
-
-
-![image](https://github.com/user-attachments/assets/a9e00b74-bf45-42a4-b6b1-55aeef49ec1b)
