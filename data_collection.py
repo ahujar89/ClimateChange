@@ -1,13 +1,14 @@
 import pandas as pd
-from pymongo import MongoClient
 
-def collect_data():
-    # Connect to MongoDB
-    client = MongoClient("mongodb://localhost:27017/")
-    db = client["WildfirePredictionDB"]
-    weather_data_collection = db["weather_data"]
-    
-    # Load data from MongoDB into a DataFrame
-    weather_data = pd.DataFrame(list(weather_data_collection.find()))
-    print("Data collected successfully.")
-    return weather_data
+def load_ontario_wildfire_data():
+    try:
+        file_path = "ontario_wildfire_data_all_cities.csv"  # Always ensure this relative path is correct
+        data = pd.read_csv(file_path)
+        print("Ontario wildfire data loaded successfully.")
+        return data
+    except FileNotFoundError:
+        print("Error: Ontario wildfire data file not found.")
+        return pd.DataFrame()
+    except pd.errors.ParserError:
+        print("Error: Failed to parse Ontario wildfire data file.")
+        return pd.DataFrame()
