@@ -1,7 +1,6 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
-from sklearn.cluster import DBSCAN
 
 def train_lstm_model(data, scaler):
     try:
@@ -22,12 +21,17 @@ def train_lstm_model(data, scaler):
         model.fit(X_seq, X[5:, 0], epochs=5, batch_size=1)
 
         # Predict wildfire risks
-        predictions = model.predict(X_seq)
-        data["Predicted Wildfire Risk"] = np.concatenate(([np.nan] * 5, predictions.flatten()))
+        predictions = model.predict(X_seq).flatten()
+        average_prediction = predictions.mean()  # Calculate the average of predictions
+
+        # Fill initial missing values with the average prediction
+        risk_values = np.concatenate(([average_prediction] * 5, predictions))  # Use average instead of NaN or 0
+        data["Predicted Wildfire Risk"] = risk_values
         print("LSTM prediction completed.")
         return data
     except Exception as e:
         print(f"Error during LSTM prediction: {e}")
+        data["Predicted Wildfire Risk"] = np.nan  # Set default risk value as NaN in case of failure
         return data
 
 def apply_dbscan_clustering(data):

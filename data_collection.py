@@ -2,8 +2,10 @@ import pandas as pd
 
 def load_ontario_wildfire_data():
     try:
-        file_path = "ontario_wildfire_data_all_cities.csv"  # Always ensure this relative path is correct
+        file_path = "ontario_wildfire_data_all_cities.csv"
         data = pd.read_csv(file_path)
+        if data.empty:
+            raise ValueError("Ontario wildfire data file is empty.")
         print("Ontario wildfire data loaded successfully.")
         return data
     except FileNotFoundError:
