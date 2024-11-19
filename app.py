@@ -1,12 +1,15 @@
-from data_collection import load_ontario_wildfire_data
+from data_collection import load_wildfire_data  # Adjusted function name
 from data_cleaning import clean_ontario_wildfire_data
 from WildfirePrediction import train_lstm_model, apply_dbscan_clustering
 from data_visualization import plot_visualizations
 
 def main():
     try:
+        # Decide data source (set to True if MongoDB is preferred)
+        use_mongodb = False  # Change to True to use MongoDB
+        
         print("Loading Ontario wildfire data...")
-        data = load_ontario_wildfire_data()
+        data = load_wildfire_data(use_mongodb=use_mongodb)
         if data.empty:
             raise ValueError("Data loading failed.")
 
