@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-import numpy as np
+import streamlit as st
+from streamlit_folium import st_folium
 
 def create_graphs(row):
     """Generates multiple large graphs with meaningful y-axis labels and encodes them as base64 images."""
@@ -26,7 +26,7 @@ def create_graphs(row):
         axs[0].text(bar.get_x() + bar.get_width() / 2, yval + 0.02, f"{yval:.2f}", ha="center", fontsize=16, color="black")
 
     # Line Chart (Trend Over Time)
-    time_values = [1, 2, 3, 4, 5]  # Dummy data; replace with actual time series
+    time_values = [1, 2, 3, 4, 5]  # Dummy data; replace with actual time series if available
     trend_values = [row[metric] * 0.9 + i * 0.01 for i, metric in enumerate(metrics)]
     axs[1].plot(time_values, trend_values, marker="o", color="green", linestyle="-", linewidth=3)
     axs[1].set_title("Trend Over Time", fontsize=22, fontweight="bold")
@@ -56,20 +56,27 @@ def create_graphs(row):
     return f'<img src="data:image/png;base64,{img_base64}" style="width:1100px;">'
 
 def plot_visualizations(data):
-    """Generates a heatmap with interactive popups containing graphs."""
+    """Generates a heatmap with interactive popups containing graphs and information for each city, and displays it in Streamlit."""
     try:
+        # Initialize map centered on the mean latitude and longitude
         map_center = [data["Latitude"].mean(), data["Longitude"].mean()]
-        wildfire_map = folium.Map(location=map_center, zoom_start=6)
+        wildfire_map = folium.Map(location=map_center, zoom_start=6, tiles="OpenStreetMap")
 
-        heat_data = [[row["Latitude"], row["Longitude"], row["Predicted Wildfire Risk"]]
-                     for index, row in data.iterrows() if not pd.isna(row["Predicted Wildfire Risk"])]
+        # Prepare heatmap data based on Predicted Wildfire Risk
+        heat_data = [
+            [row["Latitude"], row["Longitude"], row["Predicted Wildfire Risk"]]
+            for index, row in data.iterrows() if not pd.isna(row["Predicted Wildfire Risk"])
+        ]
 
-        HeatMap(heat_data, radius=25, blur=15, max_val=1.0, 
-                gradient={0.2: "blue", 0.5: "lime", 0.7: "orange", 1.0: "red"}).add_to(wildfire_map)
+        # Add the heatmap layer
+        HeatMap(
+            heat_data, radius=25, blur=15, max_val=1.0, 
+            gradient={0.2: "blue", 0.5: "lime", 0.7: "orange", 1.0: "red"}
+        ).add_to(wildfire_map)
 
-        # Adding Circle Markers with graphs in popups
+        # Add clickable markers with popups for each city
         for _, row in data.iterrows():
-            graph_html = create_graphs(row)  # Generate multiple graphs for each city
+            graph_html = create_graphs(row)  # Generate graphs for each city
             popup_content = f"""
             <div style="font-family: Arial; font-size: 14px; width: 1100px;">
                 <h4 style="margin: 0; font-size: 16px; color: darkblue;">{row['City Name']}</h4>
@@ -80,19 +87,14 @@ def plot_visualizations(data):
             </div>
             """
 
-            folium.CircleMarker(
+            folium.Marker(
                 location=(row["Latitude"], row["Longitude"]),
-                radius=5,
-                color="black",
-                fill=True,
-                fill_color="red" if row["Predicted Wildfire Risk"] > 0.7 else "blue",
-                fill_opacity=0.7,
-                popup=folium.Popup(popup_content, max_width=1200)  # Dimensions to adjust for user readability
+                icon=folium.Icon(color="red" if row["Predicted Wildfire Risk"] > 0.7 else "blue"),
+                popup=folium.Popup(popup_content, max_width=1200)  # Dimensions for readability
             ).add_to(wildfire_map)
 
-        # Saving the enhanced map
-        wildfire_map.save("enhanced_wildfire_risk_heatmap_with_graphs.html")
-        print("Enhanced interactive wildfire heat map saved as 'enhanced_wildfire_risk_heatmap_with_graphs.html'.")
+        # Display the map directly in Streamlit using st_folium
+        st_folium(wildfire_map, width=1200, height=700)
     
     except Exception as e:
-        print(f"Error during data visualization: {e}")
+        st.error(f"Error during data visualization: {e}")
