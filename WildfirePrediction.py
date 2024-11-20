@@ -1,6 +1,8 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+from sklearn.cluster import DBSCAN  # Add this line to import DBSCAN
+
 
 def train_lstm_model(data, scaler):
     try:
