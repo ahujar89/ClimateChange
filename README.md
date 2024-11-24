@@ -66,3 +66,56 @@ Start the dashboard application:
 ```bash
 streamlit run dashboard_app.py
 ```
+
+### 6. File Descriptions
+
+- `app.py`: Main script for backend processing.
+
+- `dashboard_app.py`: Creates the interactive dashboard.
+
+- `data_cleaning.py`: Handles cleaning of raw data.
+
+- `data_visualization.py`: Visualizes data for analysis.
+
+- `WildfirePrediction.py`: Implements wildfire prediction models.
+
+- `upload_to_mongodb.py`: Uploads datasets to MongoDB.
+ 
+---
+ 
+### 7. Dependencies
+
+Install these tools before running the project:
+
+- *Python 3.8+*
+
+- *Streamlit*
+
+- *MongoDB*
+
+- Additional libraries listed in `requirements.txt`.
+ 
+---
+ 
+### 8. Verify Installation
+ 
+1. Run a sample query in MongoDB:
+
+   ```bash
+
+   mongosh
+
+   use <database_name>
+
+   show collections
+
+   ```
+ 
+2. Test the dashboard in a browser at `http://localhost:8501`.
+ 
+### 9. Known Issues
+
+Ensure Streamlit and MongoDB are correctly added to `PATH`.
+
+Restart your terminal after any `PATH` updates.
+ 
